@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { MessageCircle, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
@@ -15,10 +15,19 @@ export default function Login() {
 
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (user) navigate("/dashboard", { replace: true });
   }, [user, navigate]);
+
+  // Check for message from onboarding redirect
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMsg(location.state.message);
+      if (location.state.email) setEmail(location.state.email);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,12 +45,22 @@ export default function Login() {
           setLoading(false);
           return;
         }
-        await signUp(email, password);
-        setSuccessMsg("Account created! Check your email to confirm, then log in.");
-        setIsLogin(true);
+        const data = await signUp(email, password);
+        if (data?.session) {
+          // Auto-logged in, go to dashboard
+          navigate("/dashboard");
+        } else {
+          setSuccessMsg("Account created! You can now log in.");
+          setIsLogin(true);
+        }
       }
     } catch (err) {
-      setError(err.message || "Something went wrong");
+      const msg = err.message || "Something went wrong";
+      if (msg.toLowerCase().includes("email not confirmed")) {
+        setError("Email not confirmed yet. Please check your inbox, or go to your Supabase dashboard to disable email confirmation.");
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }

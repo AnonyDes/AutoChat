@@ -134,14 +134,19 @@ export default function Onboarding() {
     setIsSubmitting(true);
     setError("");
     try {
-      // If user isn't logged in yet, try signing in
+      // Try to ensure user is authenticated
       let authEmail = user?.email || email;
-      if (!user && email && password) {
+      let isAuthenticated = !!user;
+
+      if (!isAuthenticated && email && password) {
         try {
           const { data } = await supabase.auth.signInWithPassword({ email, password });
-          if (data?.user) authEmail = data.user.email;
+          if (data?.user) {
+            authEmail = data.user.email;
+            isAuthenticated = true;
+          }
         } catch {
-          // Continue with the email from form
+          // Continue with anon access - RLS permitting
         }
       }
 
@@ -177,7 +182,13 @@ export default function Onboarding() {
       const { error: productsError } = await supabase.from("products").insert(productsToInsert);
       if (productsError) throw productsError;
 
-      navigate("/dashboard");
+      // Navigate based on auth state
+      if (isAuthenticated) {
+        navigate("/dashboard");
+      } else {
+        // Redirect to login with success context
+        navigate("/login", { state: { message: "Setup complete! Log in to access your dashboard.", email: authEmail } });
+      }
     } catch (err) {
       setError(err.message || "Failed to save data. Please try again.");
     } finally {
