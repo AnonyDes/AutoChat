@@ -110,7 +110,7 @@ ESCALATE: true`;
 
     if (reply.includes("ORDER:")) {
       try {
-        const orderMatch = reply.match(/ORDER:\s*(\{[\s\S]*\})/s);
+        const orderMatch = reply.match(/ORDER:\s*(\{[\s\S]*\})/);
         if (orderMatch) {
           const orderData = JSON.parse(orderMatch[1]);
 
