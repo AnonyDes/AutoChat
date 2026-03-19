@@ -76,7 +76,7 @@ export default function DashboardPage() {
     setClient({ ...client, is_bot_active: newStatus });
   };
 
-  const updateOrderStatus = async (orderId: string, status: string) => {
+  const updateOrderStatus = async (orderId: string, status: "pending" | "confirmed" | "delivered" | "cancelled") => {
     await supabase.from("orders").update({ status }).eq("id", orderId);
     setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
   };

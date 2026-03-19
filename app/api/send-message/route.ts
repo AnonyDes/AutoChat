@@ -3,16 +3,16 @@ import { sendWhatsAppMessage } from "@/lib/whatsapp";
 
 export async function POST(request: NextRequest) {
   try {
-    const { to, message } = await request.json();
+    const { to, message, phoneNumberId } = await request.json();
 
-    if (!to || !message) {
+    if (!to || !message || !phoneNumberId) {
       return NextResponse.json(
-        { error: "Recipient and message are required" },
+        { error: "Recipient, message, and phoneNumberId are required" },
         { status: 400 }
       );
     }
 
-    const result = await sendWhatsAppMessage(to, message);
+    const result = await sendWhatsAppMessage(to, message, phoneNumberId);
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
