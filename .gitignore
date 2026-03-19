@@ -1,33 +1,42 @@
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
 
-# testing
-/coverage
+# Environment variables (NEVER commit these)
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
 
-# next.js
-/.next/
-/out/
+# Build output
+build/
+dist/
+.next/
+out/
 
-# production
-/build
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
 
-# misc
+# OS files
 .DS_Store
-*.pem
+Thumbs.db
 
-# debug
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# Test reports
+test_reports/
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Misc
+*.tgz
+coverage/

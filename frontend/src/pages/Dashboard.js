@@ -3,14 +3,19 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import supabase from "../lib/supabase";
+import ChatPreview from "../components/ChatPreview";
+import Analytics from "../components/Analytics";
 import {
   LayoutDashboard, MessageSquare, ShoppingBag, Package, Settings,
   LogOut, MessageCircle, Power, Plus, Trash2, Check, X,
-  TrendingUp, Clock, AlertTriangle, ChevronRight, Search, Edit2, Save, Bell
+  TrendingUp, Clock, AlertTriangle, ChevronRight, Search, Edit2, Save, Bell,
+  BarChart3, BotMessageSquare
 } from "lucide-react";
 
 const navItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "chat-preview", label: "Chat Preview", icon: BotMessageSquare },
   { id: "conversations", label: "Conversations", icon: MessageSquare },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "products", label: "Products", icon: Package },
@@ -351,6 +356,28 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Analytics */}
+        {activeTab === "analytics" && (
+          <div className="p-6 md:p-8" data-testid="analytics-tab">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-white">Analytics</h1>
+              <p className="text-sm text-zinc-500 mt-1">Performance overview for the last 7 days</p>
+            </div>
+            <Analytics conversations={conversations} orders={orders} products={products} />
+          </div>
+        )}
+
+        {/* Chat Preview */}
+        {activeTab === "chat-preview" && (
+          <div className="p-6 md:p-8" data-testid="chat-preview-tab">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-white">Chat Preview</h1>
+              <p className="text-sm text-zinc-500 mt-1">Test your AI bot as a customer before going live</p>
+            </div>
+            <ChatPreview client={client} products={products} backendUrl={process.env.REACT_APP_BACKEND_URL} />
           </div>
         )}
 

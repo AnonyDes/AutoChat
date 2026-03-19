@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 
 class WhatsAppBusinessAPITester:
-    def __init__(self, base_url="https://bd7f45c4-fd2c-4e7f-a154-cb7bbc6f4f36.preview.emergentagent.com"):
+    def __init__(self, base_url="https://saas-redesign-7.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
