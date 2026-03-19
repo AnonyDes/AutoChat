@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
@@ -6,7 +6,7 @@ import supabase from "../lib/supabase";
 import {
   LayoutDashboard, MessageSquare, ShoppingBag, Package, Settings,
   LogOut, MessageCircle, Power, Plus, Trash2, Check, X,
-  TrendingUp, Clock, AlertTriangle, ChevronRight, Search, Edit2, Save
+  TrendingUp, Clock, AlertTriangle, ChevronRight, Search, Edit2, Save, Bell
 } from "lucide-react";
 
 const navItems = [
@@ -32,10 +32,56 @@ export default function Dashboard() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [newProduct, setNewProduct] = useState({ name: "", price: "", description: "", stock: "" });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [notifications, setNotifications] = useState({ escalations: 0, pendingOrders: 0 });
   const chatEndRef = useRef(null);
 
   useEffect(() => { loadData(); }, [user]);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [selectedConversation]);
+
+  // Real-time subscriptions
+  useEffect(() => {
+    if (!client) return;
+
+    const channel = supabase
+      .channel('dashboard-realtime')
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'conversations',
+        filter: `client_id=eq.${client.id}`
+      }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setConversations(prev => [payload.new, ...prev]);
+        } else if (payload.eventType === 'UPDATE') {
+          setConversations(prev => prev.map(c => c.id === payload.new.id ? payload.new : c));
+          if (selectedConversation?.id === payload.new.id) {
+            setSelectedConversation(payload.new);
+          }
+        }
+        updateNotifications();
+      })
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'orders',
+        filter: `client_id=eq.${client.id}`
+      }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setOrders(prev => [payload.new, ...prev]);
+        } else if (payload.eventType === 'UPDATE') {
+          setOrders(prev => prev.map(o => o.id === payload.new.id ? payload.new : o));
+        }
+        updateNotifications();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [client, selectedConversation]);
+
+  // Update notification badges
+  const updateNotifications = useCallback(() => {
+    const escalations = conversations.filter(c => c.status === 'escalated').length;
+    const pendingOrders = orders.filter(o => o.status === 'pending').length;
+    setNotifications({ escalations, pendingOrders });
+  }, [conversations, orders]);
+
+  useEffect(() => { updateNotifications(); }, [conversations, orders, updateNotifications]);
 
   const loadData = async () => {
     if (!user) return;
@@ -179,22 +225,42 @@ export default function Dashboard() {
         </div>
 
         <nav className="flex-1 p-2 space-y-1" data-testid="sidebar-nav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                activeTab === item.id
-                  ? "bg-primary/10 text-primary"
-                  : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"
-              } ${sidebarCollapsed ? "justify-center" : ""}`}
-              data-testid={`nav-${item.id}`}
-              title={item.label}
-            >
-              <item.icon size={18} />
-              {!sidebarCollapsed && item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const badge = item.id === "conversations" ? notifications.escalations :
+                          item.id === "orders" ? notifications.pendingOrders : 0;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  activeTab === item.id
+                    ? "bg-primary/10 text-primary"
+                    : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"
+                } ${sidebarCollapsed ? "justify-center" : ""}`}
+                data-testid={`nav-${item.id}`}
+                title={item.label}
+              >
+                <div className="relative">
+                  <item.icon size={18} />
+                  {badge > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-bold rounded-full px-1 animate-pulse" data-testid={`badge-${item.id}`}>
+                      {badge}
+                    </span>
+                  )}
+                </div>
+                {!sidebarCollapsed && (
+                  <span className="flex-1 text-left">{item.label}</span>
+                )}
+                {!sidebarCollapsed && badge > 0 && (
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                    item.id === "conversations" ? "bg-red-500/10 text-red-400" : "bg-amber-500/10 text-amber-400"
+                  }`} data-testid={`badge-count-${item.id}`}>
+                    {badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="p-3 space-y-2 border-t border-zinc-800/50">

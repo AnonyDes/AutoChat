@@ -24,7 +24,7 @@ const slideVariants = {
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, signUp } = useAuth();
+  const { user, signUp, signIn } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -94,7 +94,15 @@ export default function Onboarding() {
     if (currentStep === 1 && !user) {
       setIsSubmitting(true);
       try {
-        await signUp(email, password);
+        const data = await signUp(email, password);
+        // If no session returned, try direct sign-in
+        if (!data?.session) {
+          try {
+            await signIn(email, password);
+          } catch {
+            // If sign-in also fails, still proceed - user state will update via onAuthStateChange
+          }
+        }
       } catch (err) {
         setError(err.message || "Failed to create account");
         setIsSubmitting(false);
@@ -117,7 +125,16 @@ export default function Onboarding() {
     setIsSubmitting(true);
     setError("");
     try {
-      const authEmail = user?.email || email;
+      // If user isn't logged in yet, try signing in
+      let authEmail = user?.email || email;
+      if (!user && email && password) {
+        try {
+          const { data } = await supabase.auth.signInWithPassword({ email, password });
+          if (data?.user) authEmail = data.user.email;
+        } catch {
+          // Continue with the email from form
+        }
+      }
 
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -288,8 +305,8 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <label className={labelClass}>WhatsApp Number <span className="text-red-400">*</span></label>
-                  <div className="flex gap-2">
-                    <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className={`${selectClass} w-28 shrink-0`} data-testid="onboarding-country-code">
+                  <div className="flex gap-3">
+                    <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className="w-[110px] shrink-0 bg-zinc-900/50 border border-zinc-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-3 py-3 text-white transition-all text-sm outline-none" data-testid="onboarding-country-code">
                       <option value="+237">+237</option>
                       <option value="+234">+234</option>
                       <option value="+225">+225</option>
@@ -302,6 +319,7 @@ export default function Onboarding() {
                       <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))} className={`${inputClass} pl-11`} placeholder="6XXXXXXXX" data-testid="onboarding-phone" />
                     </div>
                   </div>
+                  <p className="text-xs text-zinc-600 mt-1.5">Full number: {countryCode}{phoneNumber}</p>
                 </div>
                 <div>
                   <label className={labelClass}>Location <span className="text-red-400">*</span></label>

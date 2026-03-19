@@ -25,14 +25,40 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signUp = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    // First try to sign up
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin + '/dashboard',
+      },
+    });
     if (error) throw error;
+
+    // If session exists, user is auto-confirmed and logged in
+    if (data.session) return data;
+
+    // If no session (email confirmation enabled), try signing in immediately
+    // This works when Supabase has auto-confirm on or in development mode
+    try {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (!signInError && signInData.session) return signInData;
+    } catch {
+      // Silent fail - will handle below
+    }
+
+    // Return signup data - the user might still get a session via onAuthStateChange
     return data;
   };
 
   const signIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) {
+      if (error.message.includes("Email not confirmed")) {
+        throw new Error("Email not confirmed. Please check your inbox or contact support.");
+      }
+      throw error;
+    }
     return data;
   };
 
