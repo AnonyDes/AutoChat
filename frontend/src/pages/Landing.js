@@ -175,7 +175,7 @@ export default function Landing() {
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-zinc-400 leading-relaxed max-w-lg">
               AI handles your customer messages, orders and follow-ups 24/7 — so you never miss a sale.
             </motion.p>
-            <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-4 pt-2">
+            <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-4 pt-2 relative z-10">
               <Link
                 to="/onboarding"
                 className="inline-flex items-center justify-center gap-2 bg-primary text-black font-semibold px-8 py-3.5 rounded-full hover:bg-primary-600 transition-all shadow-[0_0_30px_-5px_rgba(37,211,102,0.4)] hover:shadow-[0_0_40px_-5px_rgba(37,211,102,0.6)]"
@@ -185,7 +185,7 @@ export default function Landing() {
               </Link>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 border border-zinc-700 text-zinc-300 font-medium px-8 py-3.5 rounded-full hover:bg-zinc-800/50 hover:border-zinc-600 transition-all"
+                className="inline-flex items-center justify-center gap-2 border border-zinc-700 text-zinc-300 font-medium px-8 py-3.5 rounded-full hover:bg-zinc-800/50 hover:border-zinc-600 transition-all relative z-10"
                 data-testid="hero-secondary-btn"
               >
                 See How It Works <ChevronDown size={18} />
@@ -202,9 +202,9 @@ export default function Landing() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none"
         >
-          <div className="flex gap-12 md:gap-20">
+          <div className="flex gap-12 md:gap-20 pointer-events-auto">
             <StatCounter value="10K" label="Active Users" />
             <StatCounter value="50M" label="Messages Handled" />
             <StatCounter value="99" label="Uptime %" />
