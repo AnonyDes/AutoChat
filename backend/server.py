@@ -84,6 +84,7 @@ RULES:
             system_message=system_prompt,
         )
         chat.with_model("anthropic", "claude-sonnet-4-5-20250929")
+        chat.with_max_budget(10.0)
 
         user_message = UserMessage(text=user_text)
         response_text = await chat.send_message(user_message)

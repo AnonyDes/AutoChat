@@ -33,21 +33,42 @@ export function AuthProvider({ children }) {
         emailRedirectTo: window.location.origin + '/dashboard',
       },
     });
-    if (error) throw error;
+
+    // Handle user already exists - try signing in instead
+    if (error) {
+      if (error.message.toLowerCase().includes("already registered") ||
+          error.message.toLowerCase().includes("already exists") ||
+          error.status === 422) {
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
+        return signInData;
+      }
+      // Handle rate limit - still allow progression
+      if (error.message.toLowerCase().includes("rate limit")) {
+        return { user: { email }, session: null, rateLimited: true };
+      }
+      throw error;
+    }
+
+    // Check if user was created but has no identities (Supabase duplicate user indicator)
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw new Error("This email is already registered. Please log in instead.");
+      return signInData;
+    }
 
     // If session exists, user is auto-confirmed and logged in
     if (data.session) return data;
 
-    // If no session (email confirmation enabled), try signing in immediately
-    // This works when Supabase has auto-confirm on or in development mode
+    // If no session (email confirmation might be enabled), try signing in
     try {
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (!signInError && signInData.session) return signInData;
     } catch {
-      // Silent fail - will handle below
+      // Silent fail
     }
 
-    // Return signup data - the user might still get a session via onAuthStateChange
+    // Return signup data even without session - onboarding will continue
     return data;
   };
 

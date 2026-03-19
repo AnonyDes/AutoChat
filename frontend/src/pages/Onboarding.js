@@ -94,19 +94,28 @@ export default function Onboarding() {
     if (currentStep === 1 && !user) {
       setIsSubmitting(true);
       try {
-        const data = await signUp(email, password);
-        // If no session returned, try direct sign-in
-        if (!data?.session) {
-          try {
-            await signIn(email, password);
-          } catch {
-            // If sign-in also fails, still proceed - user state will update via onAuthStateChange
-          }
+        const result = await signUp(email, password);
+        // If rate limited, still proceed - account may already be created
+        if (result?.rateLimited) {
+          // Account creation may have happened but email rate limit hit - proceed anyway
         }
       } catch (err) {
-        setError(err.message || "Failed to create account");
-        setIsSubmitting(false);
-        return;
+        const msg = err.message || "Failed to create account";
+        // If user already exists, try to sign in and proceed
+        if (msg.toLowerCase().includes("already registered") || 
+            msg.toLowerCase().includes("log in instead") ||
+            msg.toLowerCase().includes("email not confirmed")) {
+          try {
+            await signIn(email, password);
+          } catch (signInErr) {
+            // If sign-in fails too, still proceed - user can login later
+            // The important thing is not to block onboarding
+          }
+        } else if (!msg.toLowerCase().includes("rate limit")) {
+          setError(msg);
+          setIsSubmitting(false);
+          return;
+        }
       }
       setIsSubmitting(false);
     }
