@@ -143,7 +143,7 @@ ESCALATE: true`;
         console.error("Order parsing error:", orderParseError);
       }
 
-      reply = reply.replace(/ORDER:\s*\{.*\}/s, "").trim();
+      reply = reply.replace(/ORDER:\s*\{[\s\S]*\}/, "").trim();
     }
 
     if (reply.includes("ESCALATE: true")) {

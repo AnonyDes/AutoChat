@@ -420,7 +420,7 @@ export default function DashboardPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
                           value={order.status}
-                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                          onChange={(e) => updateOrderStatus(order.id, e.target.value as "pending" | "confirmed" | "delivered" | "cancelled")}
                           className="text-sm border-gray-300 rounded-md focus:ring-[#25D366] focus:border-[#25D366]"
                         >
                           <option value="pending">Pending</option>
