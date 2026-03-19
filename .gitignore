@@ -40,3 +40,7 @@ test_reports/
 # Misc
 *.tgz
 coverage/
+-e 
+# Environment files
+*.env
+*.env.*
