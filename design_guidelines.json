@@ -1,0 +1,201 @@
+{
+  "project_name": "Premium African SaaS - WhatsApp Integrated",
+  "version": "1.0",
+  "identity": {
+    "persona": "E1: The Anti-AI Designer",
+    "tone": "Bold, Premium, Trustworthy, Modern African Tech",
+    "core_principles": [
+      "Fusion over Imitation: Mix African warmth with Swiss precision.",
+      "Emotion First: Every screen must build trust.",
+      "Content is King: Direct the user's eye with purpose.",
+      "Zoom In: Bold focus on key metrics.",
+      "Negative Space: Luxurious breathing room."
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "primary_color": "#25D366",
+    "background": "#09090b",
+    "surface": "#18181b",
+    "border": "#27272a",
+    "text_primary": "#fafafa",
+    "text_secondary": "#a1a1aa",
+    "font_family_heading": "Plus Jakarta Sans, sans-serif",
+    "font_family_body": "Plus Jakarta Sans, sans-serif"
+  },
+  "design_system": {
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#25D366",
+          "foreground": "#000000",
+          "50": "#effef4",
+          "100": "#dbfce5",
+          "200": "#bbf8ce",
+          "300": "#8bf0ae",
+          "400": "#52e38a",
+          "500": "#25d366",
+          "600": "#1ab853",
+          "700": "#169043",
+          "800": "#167239",
+          "900": "#155e33",
+          "950": "#05341a"
+        },
+        "background": "#09090b",
+        "foreground": "#fafafa",
+        "card": {
+          "DEFAULT": "hsl(240 10% 3.9%)",
+          "foreground": "hsl(0 0% 98%)"
+        },
+        "popover": {
+          "DEFAULT": "hsl(240 10% 3.9%)",
+          "foreground": "hsl(0 0% 98%)"
+        },
+        "muted": {
+          "DEFAULT": "hsl(240 3.7% 15.9%)",
+          "foreground": "hsl(240 5% 64.9%)"
+        },
+        "accent": {
+          "DEFAULT": "hsl(240 3.7% 15.9%)",
+          "foreground": "hsl(0 0% 98%)"
+        },
+        "destructive": {
+          "DEFAULT": "hsl(0 62.8% 30.6%)",
+          "foreground": "hsl(0 0% 98%)"
+        },
+        "border": "hsl(240 3.7% 15.9%)",
+        "input": "hsl(240 3.7% 15.9%)",
+        "ring": "#25D366"
+      },
+      "gradients": {
+        "hero_glow": "radial-gradient(circle at center, rgba(37, 211, 102, 0.15) 0%, rgba(9, 9, 11, 0) 70%)",
+        "card_shimmer": "linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.05) 40%, transparent 60%)"
+      }
+    },
+    "typography": {
+      "headings": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tight leading-[1.1]",
+        "h2": "text-3xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium tracking-tight"
+      },
+      "body": {
+        "large": "text-lg md:text-xl leading-relaxed text-zinc-400",
+        "default": "text-base leading-relaxed text-zinc-400",
+        "small": "text-sm text-zinc-500"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-12 md:gap-24",
+      "element_gap": "gap-4 md:gap-8"
+    },
+    "effects": {
+      "glass": "bg-zinc-900/40 backdrop-blur-xl border border-white/5 shadow-2xl",
+      "glass_card": "bg-zinc-900/60 backdrop-blur-md border border-white/5 hover:border-green-500/20 transition-colors duration-300",
+      "neon_glow": "shadow-[0_0_20px_-5px_rgba(37,211,102,0.3)]"
+    },
+    "animation": {
+      "library": "framer-motion",
+      "transitions": {
+        "default": "transition-all duration-300 ease-out",
+        "hover": "hover:scale-[1.02] active:scale-[0.98]"
+      }
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "hero": {
+        "style": "Split Layout with 3D/Parallax Phone Mockup",
+        "elements": [
+          "H1: 'Power Your Business on WhatsApp'",
+          "Sub: 'The all-in-one platform for African entrepreneurs. Automate sales, manage inventory, and grow faster.'",
+          "CTA: Primary Green Button with arrow icon",
+          "Visual: Floating 3D phone showing WhatsApp chat interface with bot replies"
+        ]
+      },
+      "features": {
+        "grid": "Bento Grid (Mode A: Tetris)",
+        "cards": [
+          "Automated Replies (Large)",
+          "Inventory Management (Tall)",
+          "Secure Payments (Square)",
+          "Analytics (Wide)"
+        ]
+      }
+    },
+    "dashboard": {
+      "structure": "Sidebar Navigation + Top Bar + Main Content Area",
+      "sidebar": {
+        "style": "Fixed, Dark (bg-zinc-950), Border-r border-zinc-800",
+        "items": "Overview, Conversations, Orders, Products, Settings"
+      },
+      "content_area": {
+        "style": "bg-black/40 p-6 md:p-8 overflow-y-auto h-screen"
+      }
+    },
+    "onboarding": {
+      "style": "Multi-step Form with Progress Bar",
+      "animation": "Slide-in from right, fade-out to left",
+      "steps": ["Account", "Business Profile", "Connect WhatsApp", "Complete"]
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#25D366] text-black font-semibold hover:bg-[#20bd5a] rounded-full px-8 py-3 shadow-[0_0_20px_-5px_rgba(37,211,102,0.4)] transition-all",
+      "secondary": "bg-zinc-800 text-white hover:bg-zinc-700 rounded-full px-8 py-3 transition-all",
+      "ghost": "text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-full px-4 py-2 transition-all"
+    },
+    "cards": {
+      "stat_card": "relative overflow-hidden bg-zinc-900/50 backdrop-blur-md border border-white/5 p-6 rounded-2xl hover:border-green-500/20 transition-all group",
+      "feature_card": "bg-zinc-900/30 border border-zinc-800 p-8 rounded-3xl hover:bg-zinc-900/50 transition-all"
+    },
+    "inputs": {
+      "default": "bg-zinc-900/50 border border-zinc-800 focus:border-[#25D366] focus:ring-1 focus:ring-[#25D366] rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 transition-all",
+      "search": "pl-10 bg-zinc-800/50 border-transparent focus:bg-zinc-800 transition-all"
+    },
+    "chat_bubbles": {
+      "user": "bg-[#25D366] text-black rounded-2xl rounded-tr-none p-4 max-w-[80%] self-end shadow-md",
+      "bot": "bg-zinc-800 text-white rounded-2xl rounded-tl-none p-4 max-w-[80%] self-start border border-zinc-700"
+    }
+  },
+  "images": {
+    "hero_bg": "https://images.unsplash.com/photo-1565164370954-8eac883fb7c8?auto=format&fit=crop&w=2000&q=80",
+    "testimonials": [
+      "https://images.unsplash.com/photo-1632828167055-126c0c57ecff?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1665495005618-6f55e5f77a07?auto=format&fit=crop&w=800&q=80"
+    ],
+    "office_context": "https://images.unsplash.com/photo-1748346918817-0b1b6b2f9bab?auto=format&fit=crop&w=1200&q=80"
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5px, size 20px or 24px",
+    "mapping": {
+      "dashboard": "LayoutDashboard",
+      "conversations": "MessageSquare",
+      "orders": "ShoppingBag",
+      "products": "Package",
+      "settings": "Settings",
+      "whatsapp": "MessageCircle"
+    }
+  },
+  "accessibility": {
+    "contrast_check": "Ensure text on #25D366 is BLACK. Text on Zinc-900 is WHITE/ZINC-200.",
+    "focus_states": "Visible focus ring with color #25D366",
+    "aria_labels": "Required for all icon-only buttons"
+  },
+  "instructions_to_main_agent": {
+    "step_1": "Install dependencies: `npm install framer-motion lucide-react clsx tailwind-merge`",
+    "step_2": "Update `tailwind.config.ts` with the provided colors and font families.",
+    "step_3": "Create `components/ui/button.tsx`, `components/ui/card.tsx`, `components/ui/input.tsx` using Shadcn-like structure but with custom styles defined above.",
+    "step_4": "Implement the Dashboard Layout with Sidebar.",
+    "step_5": "Build the Landing Page with Hero and Features.",
+    "step_6": "Ensure all interactive elements have `data-testid`."
+  },
+  "universal_guidelines": [
+    "Do NOT use gradients on text unless specified.",
+    "Avoid 'Inter' font; use 'Plus Jakarta Sans'.",
+    "Use 'gap-4' minimum for all flex/grid layouts.",
+    "Ensure mobile responsiveness for all tables (use scroll containers).",
+    "Use 'sonner' for toasts."
+  ]
+}
